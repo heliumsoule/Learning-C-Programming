@@ -4,16 +4,18 @@
 #define MAXLINES 5000
 
 char *lineptr[MAXLINES];
+char lines[MAXLINES];
 
-int readlines(char *lineptr[], int nlines);
+int readlines(char *lineptr[], char *lines, int nlines);
 void writelines(char *lineptr[], int nlines);
 
 void q_sort(char *lineptr[], int left, int right);
 
 int main() {
 	int nlines;
+	
 
-	if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
+	if ((nlines = readlines(lineptr, lines, MAXLINES)) >= 0) {
 		q_sort(lineptr, 0, nlines - 1);
 		writelines(lineptr, nlines);
 		return 0;
@@ -41,11 +43,6 @@ char *alloc(int n) {
 		return 0;
 }
 
-void afree(char *p) {
-	if (p >= allocbuf && p < allocbuf + ALLOCSIZE)
-		allocp = p;
-}
-
 int get_line(char s[], int lim) {
 	int c, i;
 	for(i = 0; (c = getchar()) != EOF && c != '\n'; ++i) {
@@ -68,18 +65,22 @@ int min(int a, int b) {
 	}
 }
 
-int readlines(char *lineptr[], int maxlines) {
+int readlines(char *lineptr[], char *lines, int maxlines) {
 	int len, nlines;
-	char *p, line[MAXLEN];
-
+	char *p, *end, line[MAXLEN];
+	
+	end = lines + MAXLINES;
+	p = lines;
 	nlines = 0;
+
 	while ((len = get_line(line, MAXLEN)) > 0) {
-		if (nlines >= maxlines || (p = alloc(len)) == NULL)
+		if (nlines >= maxlines || p + len > end)
 			return -1;
 		else {
 			line[len - 1] = '\0';
 			strcpy(p, line);
 			lineptr[nlines++] = p;
+			p += len;
 		}
 	}
 	return nlines;
@@ -117,26 +118,6 @@ void swap(char *v[], int i, int j) {
 	v[i] = v[j];
 	v[j] = temp;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
