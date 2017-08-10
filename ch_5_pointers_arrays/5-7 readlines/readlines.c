@@ -3,7 +3,7 @@
 
 #define MAXLINES 5000
 
-char *lineptr[MAXLINES]
+char *lineptr[MAXLINES];
 
 int readlines(char *lineptr[], int nlines);
 void writelines(char *lineptr[], int nlines);
@@ -27,6 +27,24 @@ int main() {
 int get_line(char *, int);
 int min(int, int);
 char *alloc(int);
+
+#define ALLOCSIZE 10000
+
+static char allocbuf[ALLOCSIZE];
+static char *allocp = allocbuf;
+
+char *alloc(int n) {
+	if (allocbuf + ALLOCSIZE - allocp >= n) {
+		allocp += n;
+		return allocp - n;
+	} else
+		return 0;
+}
+
+void afree(char *p) {
+	if (p >= allocbuf && p < allocbuf + ALLOCSIZE)
+		allocp = p;
+}
 
 int get_line(char s[], int lim) {
 	int c, i;
