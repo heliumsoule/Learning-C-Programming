@@ -3,6 +3,29 @@
 #define MAXLINE 1000
 
 int get_line(char *line, int max);
+int min(int, int);
+
+int get_line(char s[], int lim) {
+	int c, i;
+	for(i = 0; (c = getchar()) != EOF && c != '\n'; ++i) {
+		if (i < lim - 1)
+			s[i] = c;
+	}
+	if ((c == '\n') && i < lim - 1) {
+		s[i] = c;
+		++i;
+	}
+	s[min(i, lim - 1)] = '\0';
+	return i;
+}
+
+int min(int a, int b) {
+	if (a <= b) {
+		return a;
+	} else {
+		return b;
+	}
+}
 
 int main(int argc, char *argv[]) {
 
@@ -30,7 +53,7 @@ int main(int argc, char *argv[]) {
 	if (argc != 1)
 		printf("Usage: find -x -n pattern\n");
 	else
-		while (getline(line, MAXLINE) > 0) {
+		while (get_line(line, MAXLINE) > 0) {
 			lineno++;
 			if ((strstr(line, *argv) != NULL) != except) {
 				if (number)
@@ -41,3 +64,10 @@ int main(int argc, char *argv[]) {
 		}
 	return found;
 }
+
+
+
+
+
+
+
